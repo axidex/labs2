@@ -119,7 +119,13 @@ int main()
     push<book>(lst,b);
     push<book>(lst,c);
     push<book>(lst,d);
-    std::cout << pop<book>(lst) << std::endl << std::endl;
+    for (auto el : lst)
+    {
+        std::cout << el << std::endl;
+    }
+    std::cout << std::endl;
+    book q = pop<book>(lst);
+    std::cout << q << std::endl << std::endl;
 
     for (auto el : lst)
     {
