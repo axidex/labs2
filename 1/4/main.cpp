@@ -54,6 +54,8 @@ public:
 	}
 };
 
+
+
 template <class T>
 class LinkedListParent
 {
@@ -139,66 +141,14 @@ public:
 	}
 };
 
-//дописать класс итератора по списку
-template<typename ValueType>
-class ListIterator : public std::iterator<std::input_iterator_tag, ValueType>
-{
-public:
-	//конструкторы
-	ListIterator() { ptr = NULL; }
-	ListIterator(Element<ValueType>* p) { ptr = p; }
-	ListIterator(const ListIterator& it) { ptr = it.ptr; }
-
-	//методы работы с итераторами
-	//присваивание
-	ListIterator& operator=(const ListIterator& it) { ptr = it.ptr; return *this; }
-	ListIterator& operator=(Element<ValueType>* p) { ptr = p; return *this; }
-
-	//проверка итераторов на равенство
-	bool operator!=(ListIterator const& other) const { return ptr != other.ptr; }
-	bool operator==(ListIterator const& other) const { return ptr == other.ptr; }
-	//получить значение
-	Element<ValueType>& operator*()
-	{
-		return *ptr;
-	}
-	//перемещение с помощью итераторов
-	ListIterator& operator++()
-	{
-		if (ptr != NULL)
-			ptr = ptr->getNext();
-		return *this;
-	}
-	ListIterator& operator++(int v)
-	{
-		if (ptr != NULL)
-			ptr = ptr->getNext();
-		return *this;
-	}
-private:
-	//текущий элемент
-	Element<ValueType>* ptr;
-};
-
-//класс итерируемый список - наследник связного списка, родитель для Очереди и Стека
-template <class T>
-class IteratedLinkedList : public LinkedListParent<T>
-{
-public:
-	IteratedLinkedList() : LinkedListParent<T>() { cout << "\nIteratedLinkedList constructor"; }
-	virtual ~IteratedLinkedList() { cout << "\nIteratedLinkedList destructor"; }
-
-	ListIterator<T> iterator;
-
-	ListIterator<T> begin() { ListIterator<T> it = LinkedListParent<T>::head; return it; }
-	ListIterator<T> end() { ListIterator<T> it = LinkedListParent<T>::tail; return it; }
-};
+template<class T>
+class ListIterator;
 
 template <class T>
-class Queue : public IteratedLinkedList<T>
+class Queue : public LinkedListParent<T>
 {
 public:
-	Queue() : IteratedLinkedList<T>() { cout << "\nQueue constructor"; }
+	Queue() { cout << "\nQueue constructor"; }
 	virtual ~Queue() { cout << "\nQueue destructor"; }
 
 	virtual Element<T>* push(T value)
@@ -241,46 +191,118 @@ public:
 	virtual Queue<T> filter(bool(*func)(const char x))
 	{
 		Queue<T> newQ;
-        
-		IteratedLinkedList<T>::iterator = LinkedListParent<T>::head;
-		while (IteratedLinkedList<T>::iterator != nullptr)
+
+		ListIterator<T> iterator = LinkedListParent<T>::head;
+		while (iterator != nullptr)
 		{
-			if (func((*IteratedLinkedList<T>::iterator).getValue()))
+			if (func((*iterator).getValue()))
 			{
-				newQ.push((*IteratedLinkedList<T>::iterator).getValue());
+				newQ.push((*iterator).getValue());
 				newQ.LinkedListParent<T>::num++;
 			}
-            IteratedLinkedList<T>::iterator++;
+			iterator++;
 		}
 		return newQ;
 	}
 };
 
+template<typename ValueType>
+class ListIterator : public std::iterator<std::input_iterator_tag, ValueType>
+{
+public:
+	//конструкторы
+	ListIterator() { ptr = NULL; }
+	ListIterator(Element<ValueType>* p) { ptr = p; }
+	ListIterator(const ListIterator& it) { ptr = it.ptr; }
+
+	ListIterator(Queue<ValueType>& Q, bool flagBeginEnd = true)
+	{
+		if (flagBeginEnd)
+			ptr = Q.getBegin();
+		else
+			ptr = Q.getEnd();
+	}
+
+	Element<ValueType>* getValue() { return ptr; }
+
+	//методы работы с итераторами
+	//присваивание
+	ListIterator&& operator=(const ListIterator& it) { ptr = it.ptr; return *this; }
+	ListIterator& operator=(Element<ValueType>* p) { ptr = p; return *this; }
+
+	//проверка итераторов на равенство
+	bool operator!=(ListIterator const& other) const { return ptr != other.ptr; }
+	bool operator==(ListIterator const& other) const { return ptr == other.ptr; }
+	//получить значение
+	Element<ValueType>& operator*()
+	{
+		return *ptr;
+	}
+	//перемещение с помощью итераторов
+	ListIterator& operator++()
+	{
+		if (ptr != NULL)
+			ptr = ptr->getNext();
+		return *this;
+	}
+	ListIterator& operator++(int v)
+	{
+		if (ptr != NULL)
+			ptr = ptr->getNext();
+		return *this;
+	}
+	ListIterator& operator--()
+	{
+		if (ptr != NULL)
+			ptr = ptr->getPrevious();
+		return *this;
+	}
+	ListIterator& operator--(int v)
+	{
+		if (ptr != NULL)
+			ptr = ptr->getPrevious();
+		return *this;
+	}
+
+
+	friend ostream& operator<< (ostream& ustream, ListIterator<ValueType>& obj)
+	{
+		ustream << *obj.getValue();
+		return ustream;
+	}
+
+private:
+	//текущий элемент
+	Element<ValueType>* ptr;
+};
+
 int main()
 {
 	Queue<char> Q;
+	Queue<char> W;
+	cout << endl;
+
+	W.push('z');
+	W.push('x');
+	W.push('c');
+
 	Q.push('a');
 	Q.push('b');
 	Q.push('c');
 	Q.push('e');
-	cout << Q;
-	cout << "\n";
-	//Element<char>* e1 = Q.pop();
-	//cout << "\nElement = " << e1->getValue();
-	Queue<char> Q2 = Q.filter(vowels);
-	cout << Q2;
-	cout << "\nIndex in the Stack class: " << Q[1]->getValue();
 
-	//cout << S;
-	//cout << "\nIterators:\n";
-	//S.iterator = S.begin();
-	//while (S.iterator != S.end())
-	//{
-	//	cout << *S.iterator << " ";
-	//	S.iterator++;
-	//}
-	//cout << *S.iterator << " ";
-	//
+	ListIterator<char> qwe (Q,0);
+	while (qwe != nullptr)
+	{
+		cout << qwe << endl;
+		qwe--;
+	}
+	qwe = W.getBegin();
+	while (qwe != nullptr)
+	{
+		cout << qwe << endl;
+		qwe++;
+	}
 	return 0;
 }
 
