@@ -243,16 +243,16 @@ public:
 	virtual Queue<T> filter(bool(*func)(const char x))
 	{
 		Queue<T> newQ;
-        
+		newQ.LinkedListParent<T>::num = 0;
+
 		IteratedLinkedList<T>::iterator = LinkedListParent<T>::head;
 		while (IteratedLinkedList<T>::iterator != nullptr)
 		{
 			if (func((*IteratedLinkedList<T>::iterator).getValue()))
 			{
 				newQ.push((*IteratedLinkedList<T>::iterator).getValue());
-				newQ.LinkedListParent<T>::num++;
 			}
-            IteratedLinkedList<T>::iterator++;
+			IteratedLinkedList<T>::iterator++;
 		}
 		return newQ;
 	}
