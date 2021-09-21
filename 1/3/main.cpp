@@ -54,6 +54,8 @@ public:
 	}
 };
 
+
+
 template <class T>
 class LinkedListParent
 {
@@ -256,8 +258,10 @@ public:
 	}
 };
 
+
 int main()
 {
+
 	Queue<char> Q;
 	Q.push('a');
 	Q.push('b');
