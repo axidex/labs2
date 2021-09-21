@@ -7,7 +7,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <ctime>
 using namespace std;
 
 bool vowels(const char x)
@@ -281,26 +280,23 @@ public:
 	}
 	virtual Element<T>* pushBook(book a)
 	{
-		int counter = 1;
+		bool flag = false;
 		Element<book>* newElem = new Element<book>(a);
 		if (LinkedListParent<T>::num > 0)
 		{
-			
+			int counter = 0;
 			ListIterator<book> it = LinkedListParent<T>::getBegin();
 			while (it != nullptr)
 			{
-				if (a.tirazh > (*it).getValue().tirazh)  
-					break;
+				if (a.tirazh > (*it).getValue().tirazh) break;
 
 				else if (a.tirazh == (*it).getValue().tirazh)
 				{
-					if (a.year > (*it).getValue().year) 
-						break;
+					if (a.year > (*it).getValue().year) break;
 
 					else if (a.year == (*it).getValue().year)
 					{
-						if (a.name > (*it).getValue().name) 
-							break;
+						if (a.name > (*it).getValue().name) break;
 					}
 				}
 				it++;
@@ -308,37 +304,11 @@ public:
 			}
 			if (LinkedListParent<T>::num == 1)
 			{
-				bool flag = true;
-				ListIterator<book> it1 = LinkedListParent<T>::getBegin();
-				if (a.tirazh > (*it1).getValue().tirazh)
-					flag = false;
-				
-				else if (a.tirazh == (*it1).getValue().tirazh)
-				{
-					if (a.year > (*it1).getValue().year) 
-						flag = false;
-
-					else if (a.year == (*it1).getValue().year )
-					{
-						if (a.name > (*it1).getValue().name) 
-							flag = false;
-					}
-				}
-				if (flag)
-				{
-					newElem->setPrevious(LinkedListParent<T>::tail);
-					LinkedListParent<T>::tail->setNext(newElem);
-					LinkedListParent<T>::tail = newElem;
-					
-				}
-				else
-				{
-					newElem->setNext(LinkedListParent<T>::head);
-					LinkedListParent<T>::head->setPrevious(newElem);
-					LinkedListParent<T>::head = newElem;
-				}
+				newElem->setPrevious(LinkedListParent<T>::tail);
+				LinkedListParent<T>::tail->setNext(newElem);
+				LinkedListParent<T>::tail = newElem;
 			}
-			else if (counter == LinkedListParent<T>::num + 1)
+			else if (counter == num+1)
 			{
 				newElem->setPrevious(LinkedListParent<T>::tail);
 				LinkedListParent<T>::tail->setNext(newElem);
@@ -346,20 +316,11 @@ public:
 			}
 			else
 			{
-				if (counter == 1)
-				{
-					LinkedListParent<T>::head->setPrevious(newElem);
-					newElem->setNext(LinkedListParent<T>::head);
-					LinkedListParent<T>::head = newElem;
-				}
-				else
-				{
-					newElem->setPrevious((*it).getPrevious());
-					newElem->setNext(it.getBook());
-					(*it).setPrevious(newElem);
-					it = newElem->getPrevious();
-					(*it).setNext(newElem);
-				}
+				newElem->setPrevious(it.getBook());
+				newElem->setNext((*it).getNext());
+				(*it).setNext(newElem);
+				it = newElem->getNext();
+				(*it).setPrevious(newElem);
 			}
 		}
 		else
@@ -370,7 +331,7 @@ public:
 		LinkedListParent<T>::num++;
 		return LinkedListParent<T>::tail;
 	}
-
+	
 
 	virtual Element<T>* pop()
 	{
@@ -397,72 +358,22 @@ public:
 
 int main()
 {
-	std::srand(std::time(nullptr));
 	Queue<book> lst;
 	cout << endl;
 	book a, b, c, d;
-	ListIterator<book> it(lst);
-	
-	lst.pushBook(a);
-	it = lst.getBegin();
-	cout << endl << endl;
-	while (it != nullptr)
-	{
-		cout << it << endl;
-		it++;
-	}
 
+	lst.pushBook(a);
 	lst.pushBook(b);
-	while (it != nullptr)
-	{
-		cout << it << endl;
-		it++;
-	}
-
-	it = lst.getBegin();
-	cout << endl << endl;
 	lst.pushBook(c);
-	while (it != nullptr)
-	{
-		cout << it << endl;
-		it++;
-	}
-
-	it = lst.getBegin();
-	cout << endl << endl;
 	lst.pushBook(d);
-	while (it != nullptr)
-	{
-		cout << it << endl;
-		it++;
-	}
 
-	it = lst.getBegin();
-	cout << endl << endl;
+	ListIterator<book> it(lst);
 	while (it != nullptr)
 	{
 		cout << it << endl;
 		it++;
 	}
-
-	lst.pushBook(a);
-	it = lst.getBegin();
-	cout << endl << endl;
-	while (it != nullptr)
-	{
-		cout << it << endl;
-		it++;
-	}
-	lst.pop();
-	cout << endl << endl;
-	it = lst.getBegin();
-	while (it != nullptr)
-	{
-		cout << it << endl;
-		it++;
-	}
-	cout << endl << endl;
-	it = lst.getBegin();
 
 	return 0;
 }
+
