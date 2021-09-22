@@ -140,8 +140,31 @@ public:
 
 	virtual ~LinkedListParent()
 	{
-		//деструктор - освобождение памяти
 		cout << "\nParent destructor";
+		Element<T>* current = nullptr;
+		while (LinkedListParent<T>::head != nullptr)
+		{
+			if (LinkedListParent<T>::head == LinkedListParent<T>::tail)
+			{
+				if (LinkedListParent<T>::head != nullptr)
+				{
+					delete LinkedListParent<T>::head;
+				}
+
+				LinkedListParent<T>::head = LinkedListParent<T>::tail = nullptr;
+			}
+			else
+			{
+				current = LinkedListParent<T>::head;
+				LinkedListParent<T>::head = LinkedListParent<T>::head->getNext();
+				if (current != nullptr)
+				{
+					delete current;
+				}
+				current = nullptr;
+			}
+			LinkedListParent<T>::num--;
+		}
 	}
 
 	//получение элемента по индексу - какова асимптотическая оценка этого действия?
