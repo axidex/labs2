@@ -24,6 +24,23 @@ public:
     unsigned short int sheets;
     Vid vid;
     unsigned int tirazh;
+
+    bool operator>(book a)
+    {
+        if(a.tirazh > tirazh) return false;
+
+        else if (a.tirazh == tirazh)
+        {
+            if (a.year > year) return false;
+
+            else if (a.year == year)
+            {
+                if (a.name > name) return false;
+            }
+        }
+        return true;
+    }
+
     book()
     {
         first_name = "nofirstname";
@@ -51,28 +68,18 @@ void insert(std::list<char> &lst, T element)
         if (*p > element)
             break;
         p++;
-
+    
     }
     lst.insert(p, element);
 }
 
 template<class T>
-void push(std::list<book> &lst,book a)
+void push(std::list<T> &lst,T a)
 {
-    std::list<book>::iterator p = lst.begin();
+    std::list<T>::iterator p = lst.begin();
     while (p != lst.end())
     {
-        if(a.tirazh > (*p).tirazh) break;
-
-        else if (a.tirazh == (*p).tirazh)
-        {
-            if (a.year > (*p).year) break;
-
-            else if (a.year == (*p).year)
-            {
-                if (a.name > (*p).name) break;
-            }
-        }
+        if (a > *p) break;
         p++;
     }
     lst.insert(p,a);

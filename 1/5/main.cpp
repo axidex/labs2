@@ -3,7 +3,7 @@
 
 // AbstractClassList.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
-
+#include <typeinfo>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -39,6 +39,21 @@ public:
 	unsigned short int sheets;
 	Vid vid;
 	unsigned int tirazh;
+	bool operator>(book a)
+    {
+        if(a.tirazh > tirazh) return false;
+
+        else if (a.tirazh == tirazh)
+        {
+            if (a.year > year) return false;
+
+            else if (a.year == year)
+            {
+                if (a.name > name) return false;
+            }
+        }
+        return true;
+    }
 	book()
 	{
 		first_name = "nofirstname";
@@ -279,7 +294,7 @@ public:
 		LinkedListParent<T>::num++;
 		return LinkedListParent<T>::tail;
 	}
-	virtual Element<T>* pushBook(book a)
+	virtual Element<T>* pushCondition(book a)
 	{
 		int counter = 1;
 		Element<book>* newElem = new Element<book>(a);
@@ -289,20 +304,7 @@ public:
 			ListIterator<book> it = LinkedListParent<T>::getBegin();
 			while (it != nullptr)
 			{
-				if (a.tirazh > (*it).getValue().tirazh)  
-					break;
-
-				else if (a.tirazh == (*it).getValue().tirazh)
-				{
-					if (a.year > (*it).getValue().year) 
-						break;
-
-					else if (a.year == (*it).getValue().year)
-					{
-						if (a.name > (*it).getValue().name) 
-							break;
-					}
-				}
+				if (a > (*it).getValue()) break;
 				it++;
 				counter++;
 			}
@@ -403,7 +405,7 @@ int main()
 	book a, b, c, d;
 	ListIterator<book> it(lst);
 	
-	lst.pushBook(a);
+	lst.pushCondition(a);
 	it = lst.getBegin();
 	cout << endl << endl;
 	while (it != nullptr)
@@ -412,40 +414,43 @@ int main()
 		it++;
 	}
 
-	lst.pushBook(b);
-	while (it != nullptr)
-	{
-		cout << it << endl;
-		it++;
-	}
-
-	it = lst.getBegin();
+	lst.pushCondition(b);
 	cout << endl << endl;
-	lst.pushBook(c);
-	while (it != nullptr)
-	{
-		cout << it << endl;
-		it++;
-	}
-
 	it = lst.getBegin();
-	cout << endl << endl;
-	lst.pushBook(d);
 	while (it != nullptr)
 	{
 		cout << it << endl;
 		it++;
 	}
 
+	cout << endl << endl;
+	lst.pushCondition(c);
 	it = lst.getBegin();
-	cout << endl << endl;
 	while (it != nullptr)
 	{
 		cout << it << endl;
 		it++;
 	}
 
-	lst.pushBook(a);
+	
+	cout << endl << endl;
+	lst.pushCondition(d);
+	it = lst.getBegin();
+	while (it != nullptr)
+	{
+		cout << it << endl;
+		it++;
+	}
+
+	cout << endl << endl;
+	it = lst.getBegin();
+	while (it != nullptr)
+	{
+		cout << it << endl;
+		it++;
+	}
+
+	lst.pushCondition(a);
 	it = lst.getBegin();
 	cout << endl << endl;
 	while (it != nullptr)

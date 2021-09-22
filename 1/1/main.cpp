@@ -19,7 +19,7 @@ void insert(std::list<char> &lst, T element)
 }
 
 template<class T>
-void push(std::list<char> &lst,char element)
+void push(std::list<T> &lst,char element)
 {
     std::list<char>::iterator p = lst.begin();
     while (p != lst.end() && element > *p) p++;
