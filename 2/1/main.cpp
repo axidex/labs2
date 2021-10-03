@@ -29,7 +29,7 @@ int main()
     marks["Book4"] = 3;
     marks["Book5"] = 4;
     marks["Book6"] = 5;
-    marks["Book7"] = 6;
+    marks["Book7"] = 7;
     std::map<std::string, int> markssorted = filtr<std::string, int>(marks,tirazhmorethan4);
     std::cout << "\nMap:\n";
     //итератор пробегает по map
