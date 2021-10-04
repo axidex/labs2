@@ -86,7 +86,7 @@ void push(std::list<T> &lst,T a)
 }
 
 template<class T>
-T pop(std::list<book> &lst)
+T pop(std::list<T> &lst)
 {
     T tmp = *(--lst.end());
     lst.pop_back();

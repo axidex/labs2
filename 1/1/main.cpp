@@ -47,10 +47,10 @@ bool vowels(const char x)
 }
 
 template <class T>
-std::list<T> filtr(std::list<T> &lst, bool(*func)(const char x))
+std::list<T> filtr(std::list<T> &lst, bool(*func)(const T x))
 {
     std::list<T> newlst;
-    for (char element : lst)
+    for (T element : lst)
     {
         if(func(element)) {newlst.push_back(element);}
     }

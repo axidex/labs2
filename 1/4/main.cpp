@@ -168,7 +168,31 @@ template<class T>
 class ListIterator;
 
 template <class T>
-class Queue : public LinkedListParent<T>
+class IteratedLinkedList : public LinkedListParent<T>
+{
+public:
+	IteratedLinkedList() : LinkedListParent<T>() {
+		cout <<
+			"\nIteratedLinkedList constructor";
+	}
+	virtual ~IteratedLinkedList() {
+		cout <<
+			"\nIteratedLinkedList destructor";
+	}
+	ListIterator<T> iterator;
+	ListIterator<T> begin() {
+		ListIterator<T> it =
+			LinkedListParent<T>::head; return it;
+	}
+	ListIterator<T> end() {
+		ListIterator<T> it =
+			LinkedListParent<T>::tail; return it;
+	}
+};
+
+
+template <class T>
+class Queue : public IteratedLinkedList<T>
 {
 public:
 	Queue() { cout << "\nQueue constructor"; }
@@ -314,7 +338,7 @@ int main()
 	Q.push('c');
 	Q.push('e');
 
-	ListIterator<char> qwe (Q,0);
+	ListIterator<char> qwe(Q, 0);
 	while (qwe != nullptr)
 	{
 		cout << qwe << endl;

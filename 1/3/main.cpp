@@ -121,49 +121,6 @@ public:
 
 		return ustream;
 	}
-
-	virtual ~LinkedListParent()
-	{
-		cout << "\nParent destructor";
-		Element<T>* current = nullptr;
-		while (LinkedListParent<T>::head != nullptr)
-		{
-			if (LinkedListParent<T>::head == LinkedListParent<T>::tail)
-			{
-				if (LinkedListParent<T>::head != nullptr)
-				{
-					delete LinkedListParent<T>::head;
-				}
-
-				LinkedListParent<T>::head = LinkedListParent<T>::tail = nullptr;
-			}
-			else
-			{
-				current = LinkedListParent<T>::head;
-				LinkedListParent<T>::head = LinkedListParent<T>::head->getNext();
-				if (current != nullptr)
-				{
-					delete current;
-				}
-				current = nullptr;
-			}
-			LinkedListParent<T>::num--;
-		}
-	}
-		friend istream& operator>> (istream & ustream, LinkedListParent<T>&obj)
-		{
-			//чтение из файла и консоли совпадают
-			int len;
-			ustream >> len;
-			//здесь надо очистить память под obj, установить obj.num = 0
-			double v = 0;
-			for (int i = 0; i < len; i++)
-			{
-				ustream >> v;
-				obj.push(v);
-			}
-			return ustream;
-		}
 	};
 
 	//дописать класс итератора по списку
@@ -229,7 +186,7 @@ public:
 		
 		Queue<T> (Queue<T>* f)
 		{
-			Element<T>* current = f.LinkedListParent<T>::head;
+			Element<T>* current = f->LinkedListParent<T>::head;
 			while (current != nullptr)
 			{
 				this->push(current->getValue());
@@ -274,45 +231,21 @@ public:
 			return newElem;
 		}
 
-		virtual void filter(Queue<T>& a, bool(*func)(const char x))
+		Queue<T> filter(bool(*func)(const T x))
 		{
-			if (!(a.LinkedListParent<T>::head == nullptr))
-			{
-				Element<T>* current = nullptr;
-				while (LinkedListParent<T>::head != nullptr)
-				{
-					if (LinkedListParent<T>::head == LinkedListParent<T>::tail)
-					{
-						if (LinkedListParent<T>::head != nullptr)
-						{
-							delete LinkedListParent<T>::head;
-						}
-
-						LinkedListParent<T>::head = LinkedListParent<T>::tail = nullptr;
-					}
-					else
-					{
-						current = LinkedListParent<T>::head;
-						LinkedListParent<T>::head = LinkedListParent<T>::head->getNext();
-						if (current != nullptr)
-						{
-							delete current;
-						}
-						current = nullptr;
-					}
-					LinkedListParent<T>::num--;
-				}
-			}
+			Queue<T> tmp;
+			if (LinkedListParent<T>::head == nullptr) return nullptr;
 
 			IteratedLinkedList<T>::iterator = LinkedListParent<T>::head;
 			while (IteratedLinkedList<T>::iterator != nullptr)
 			{
 				if (func((*IteratedLinkedList<T>::iterator).getValue()))
 				{
-					a.push((*IteratedLinkedList<T>::iterator).getValue());
+					tmp.push((*IteratedLinkedList<T>::iterator).getValue());
 				}
 				IteratedLinkedList<T>::iterator++;
 			}
+			return tmp;
 		}
 	};
 
@@ -330,7 +263,7 @@ public:
 		//Element<char>* e1 = Q.pop();
 		//cout << "\nElement = " << e1->getValue();
 		Queue<char> Q2;
-		Q.filter(Q2, vowels);
+		Q2 = Q.filter(vowels);
 		cout << Q2;
 		cout << "\nIndex in the Stack class: " << Q[1]->getValue();
 
