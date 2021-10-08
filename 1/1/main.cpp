@@ -27,7 +27,7 @@ void push(std::list<T> &lst,char element)
 }
 
 template<class T>
-T pop(std::list<char> &lst)
+T pop(std::list<T> &lst)
 {
     T tmp = *(--lst.end());
     lst.pop_back();
