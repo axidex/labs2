@@ -3,14 +3,26 @@
 #include <map>
 #include <iostream>
 
-bool tirazhmorethan4(int x) 
+struct Book
+{
+    int tirazh;
+    Book(){ tirazh = rand() % 10000 + 20000; }
+    bool operator>(int b) { return this->tirazh>b; }
+    friend std::ostream& operator<<(std::ostream& s, Book el)
+    {
+        s << el.tirazh << std::endl;
+        return s;
+    }
+};
+
+bool tirazhmorethan4(Book x) 
 {
     if (x>4) return true;
     return false;
 }
 
 template<class T, class M>
-std::map<T,M> filtr(std::map<T,M> &mp, bool(*func)(int x))
+std::map<T,M> filtr(std::map<T,M> &mp, bool(*func)(Book x))
 {
     std::map<T,M> newmap;
     for (auto element : mp)
@@ -22,18 +34,19 @@ std::map<T,M> filtr(std::map<T,M> &mp, bool(*func)(int x))
 
 int main()
 {
-    std::map<std::string, int> marks;
-    marks["Book1"] = 5;
-    marks["Book2"] = 4;
-    marks["Book3"] = 5;
-    marks["Book4"] = 3;
-    marks["Book5"] = 4;
-    marks["Book6"] = 5;
-    marks["Book7"] = 7;
-    std::map<std::string, int> markssorted = filtr<std::string, int>(marks,tirazhmorethan4);
+    std::map<std::string, Book> marks;
+    Book a,b,c,d,e,f,g;
+    marks["Book1"] = a;
+    marks["Book2"] = b;
+    marks["Book3"] = c;
+    marks["Book4"] = d;
+    marks["Book5"] = e;
+    marks["Book6"] = f;
+    marks["Book7"] = g;
+    std::map<std::string, Book> markssorted = filtr<std::string, Book>(marks,tirazhmorethan4);
     std::cout << "\nMap:\n";
     //итератор пробегает по map
-    std::map<std::string, int>::iterator it_m = markssorted.begin();
+    std::map<std::string, Book>::iterator it_m = markssorted.begin();
     while (it_m != markssorted.end())
     {
         //перемещение по списку с помощью итератора, нет операции [i]

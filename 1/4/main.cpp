@@ -179,15 +179,6 @@ public:
 		cout <<
 			"\nIteratedLinkedList destructor";
 	}
-	ListIterator<T> iterator;
-	ListIterator<T> begin() {
-		ListIterator<T> it =
-			LinkedListParent<T>::head; return it;
-	}
-	ListIterator<T> end() {
-		ListIterator<T> it =
-			LinkedListParent<T>::tail; return it;
-	}
 };
 
 

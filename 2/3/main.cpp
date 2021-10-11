@@ -235,19 +235,10 @@ public:
     //поиск узла в дереве. Второй параметр - в каком поддереве искать, первый - что искать
     virtual Node<V, T>* Find(T data, Node<V, T>* Current)
     {
-        //база рекурсии
-        if (Current == NULL)
-            return NULL;
-
-        if (Current->getData() == data)
-            return Current;
-
-        //рекурсивный вызов
-        if (Current->getData() > data)
-            return Find(data, Current->getLeft());
-
-        if (Current->getData() < data)
-            return Find(data, Current->getRight());
+        return  Current == nullptr ? nullptr :
+                Current->getData() == data ? Current : 
+                Current->getData() > data ? Find(data, Current->getLeft()) :
+                Current->getData() < data ? Find(data, Current->getRight()) : nullptr;
     }
 
     //три обхода дерева
@@ -292,10 +283,18 @@ class IteratedTree : public Tree<V, T>
 public:
     IteratedTree<V, T>() : Tree<V, T>() {}
 
-    TreeIterator<V, T> iterator;
+    TreeIterator<V, T> iterator; // Можно просто убрать итератор из member'ов этогого класса тк TreeIterator прекрасно работает и отдельно.
 
-    TreeIterator<V, T> begin() {}
-    TreeIterator<V, T> end() {}
+    TreeIterator<V, T> begin() 
+    {
+        TreeIterator<V, T> it = Tree<V,T>::Max();
+        return it;
+    }
+    TreeIterator<V, T> end() 
+    {
+        TreeIterator<V, T> it = Tree<V,T>::Min();
+        return it;
+    }
 };
 
 template <class V, class T>
@@ -630,18 +629,10 @@ public:
 
     Node<V, T>* SearchByData(T a, Node<V, T>* p)
     {
-        if (p != nullptr)
-        {
-            SearchByData(a, p->getLeft());
-            SearchByData(a, p->getRight());
-
-            if (p->getData() == a)
-                return p;
-        }
+        return Find(a,p);
     }
     Node<V, T>* SearchByKey(T k, Node<V, T>* p)
     {
-        Node<V, T>* p = Tree<V, T>::root;
         if (p != nullptr)
         {
             SearchByKey(k, p->getLeft());

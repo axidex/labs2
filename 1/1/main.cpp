@@ -5,9 +5,9 @@
 // тип - char, только гласные 
 
 template <class T>
-void insert(std::list<char> &lst, T element)
+void insert(std::list<T> &lst, T element)
 {
-    std::list<char>::iterator p = lst.begin();
+    auto p = lst.begin();
     while (p != lst.end())
     {
         if (*p > element)
@@ -19,9 +19,9 @@ void insert(std::list<char> &lst, T element)
 }
 
 template<class T>
-void push(std::list<T> &lst,char element)
+void push(std::list<T> &lst,T element)
 {
-    std::list<char>::iterator p = lst.begin();
+    auto p = lst.begin();
     while (p != lst.end() && element > *p) p++;
     lst.insert(p,element);
 }
