@@ -1,7 +1,93 @@
 #include <iostream>
 #include <cassert>
 using namespace std;
-//узел дерева
+
+struct book
+{
+private:
+    enum Vid
+    {
+        VID_ELEC = 0,
+        VID_PAPER,
+        VID_AUDIO,
+    };
+public:
+    std::string first_name;
+    std::string second_name;
+    std::string name;
+    unsigned short int year;
+    std::string izdatelstvo;
+    unsigned short int sheets;
+    Vid vid;
+    unsigned int tirazh;
+
+    bool operator>(book a)
+    {
+        if (a.tirazh > tirazh) return false;
+
+        else if (a.tirazh == tirazh)
+        {
+            if (a.year > year) return false;
+
+            else if (a.year == year)
+            {
+                if (a.name > name) return false;
+            }
+        }
+        return true;
+    }
+    bool operator<(book a)
+    {
+        if (a.tirazh < tirazh) return false;
+
+        else if (a.tirazh == tirazh)
+        {
+            if (a.year < year) return false;
+
+            else if (a.year == year)
+            {
+                if (a.name < name) return false;
+            }
+        }
+        return true;
+    }
+    bool operator>=(book a)
+    {
+        if (a.tirazh >= tirazh) return false;
+
+        else if (a.tirazh == tirazh)
+        {
+            if (a.year >= year) return false;
+
+            else if (a.year == year)
+            {
+                if (a.name >= name) return false;
+            }
+        }
+        return true;
+    }
+
+    book()
+    {
+        first_name = "nofirstname";
+        second_name = "nosecname";
+        name = "nobookname";
+        year = std::rand() % 100 + 1920;
+        izdatelstvo = "nonameizd";
+        sheets = std::rand() % 1000 + 20;
+        vid = static_cast<Vid>(rand() % VID_AUDIO);
+        tirazh = rand() % 10000 + 20000;
+    }
+    friend ostream& operator<<(ostream& s, book el)
+    {
+        s << el.first_name << '\t' << el.second_name << '\t' << el.name << '\t' << el.year << '\t' << el.izdatelstvo << '\t' << el.sheets << '\t' << el.vid << '\t' << el.tirazh << std::endl;
+        return s;
+    }
+};
+
+
+
+
 template <class T>
 class Node
 {
@@ -43,6 +129,7 @@ public:
         s << el.getValue() << std::endl;
         return s;
     }
+
 };
 template <class T>
 void print(Node<T>* N)
@@ -77,7 +164,7 @@ public:
         len = 0;
         size = MemorySize;
     }
-    
+
     //поменять местами элементы arr[index1], arr[index2]
     void Swap(int index1, int index2)
     {
@@ -133,7 +220,7 @@ public:
         //здесь нужна защита от дурака
         return (index % 2 == 0) ? index / 2 - 1 : index / 2;
     }
-      //просеить элемент вверх
+    //просеить элемент вверх
     void SiftUp(int index = -1)
     {
         if (index == -1)
@@ -177,7 +264,7 @@ public:
         {
             indexMax = indexL;
         }
-        else 
+        else
         {
             flag = false;
         }
@@ -271,25 +358,26 @@ public:
 int main()
 {
 
-    Heap<int> Tree;
-    Tree.Add(20);
-    Tree.Add(15);
-    Tree.Add(11);
-    Tree.Add(6);
-    Tree.Add(9);
-    Tree.Add(7);
-    Tree.Add(8);
-    Tree.Add(1);
-    Tree.Add(3);
-    Tree.Add(5);
-    Tree.Add(8);
-    
+    Heap<book> Tree;
+    book a, b, c, d, e, f, g, h, i, j, k;
+    Tree.Add(a);
+    Tree.Add(b);
+    Tree.Add(c);
+    Tree.Add(d);
+    Tree.Add(e);
+    Tree.Add(f);
+    Tree.Add(g);
+    Tree.Add(h);
+    Tree.Add(i);
+    Tree.Add(j);
+    Tree.Add(k);
+
     //cout << *(Tree.ExtractMax()) << endl << *(Tree.ExtractMax()) << endl << *(Tree.ExtractMax()) << endl << *(Tree.ExtractMax()) << endl;
     Tree.HeapOut();
-    
+
     //cout << *(Tree.ExtractMax()) << *(Tree.ExtractMax()) << *(Tree.ExtractMax()) <<  endl << endl << endl;
     cout << "\n-----\nStraight:" << endl;
-    void (*f_ptr)(Node<int> *);
+    void (*f_ptr)(Node<book> *);
     f_ptr = print;
     Tree.Straight(f_ptr);
 
