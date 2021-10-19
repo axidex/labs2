@@ -371,7 +371,10 @@ int main()
     Tree.Add(i);
     Tree.Add(j);
     Tree.Add(k);
-
+    while(Tree.getCount() != 0)
+    {
+        cout << *(Tree.ExtractMax()) << endl;
+    }
     //cout << *(Tree.ExtractMax()) << endl << *(Tree.ExtractMax()) << endl << *(Tree.ExtractMax()) << endl << *(Tree.ExtractMax()) << endl;
     Tree.HeapOut();
 

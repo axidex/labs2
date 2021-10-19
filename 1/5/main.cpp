@@ -317,14 +317,41 @@ public:
 		LinkedListParent<T>::num++;
 		return LinkedListParent<T>::tail;
 	}
-	virtual Element<T>* pushCondition(book a)
+
+	virtual Element<T>* pop()
+	{
+		Element<T>* newElem;
+		if (LinkedListParent<T>::num > 0)
+		{
+			newElem = LinkedListParent<T>::head;
+			LinkedListParent<T>::head = LinkedListParent<T>::head->getNext();
+		}
+		else
+		{
+			newElem = LinkedListParent<T>::head;
+			LinkedListParent<T>::head = LinkedListParent<T>::tail = nullptr;
+		}
+		newElem->setPrevious(nullptr);
+		newElem->setNext(nullptr);
+		LinkedListParent<T>::num--;
+		return newElem;
+	}
+
+
+};
+
+template<class T>
+class newQueue : public Queue<T>
+{
+public:
+virtual Element<T>* pushCondition(T a)
 	{
 		int counter = 1;
-		Element<book>* newElem = new Element<book>(a);
+		Element<T>* newElem = new Element<T>(a);
 		if (LinkedListParent<T>::num > 0)
 		{
 			
-			ListIterator<book> it = LinkedListParent<T>::getBegin();
+			ListIterator<T> it = LinkedListParent<T>::getBegin();
 			while (it != nullptr)
 			{
 				if (a > (*it).getValue()) break;
@@ -335,20 +362,9 @@ public:
 			{
 				bool flag = true;
 				ListIterator<book> it1 = LinkedListParent<T>::getBegin();
-				if (a.tirazh > (*it1).getValue().tirazh)
+				if(a > (*it1).getValue())
 					flag = false;
-				
-				else if (a.tirazh == (*it1).getValue().tirazh)
-				{
-					if (a.year > (*it1).getValue().year) 
-						flag = false;
-
-					else if (a.year == (*it1).getValue().year )
-					{
-						if (a.name > (*it1).getValue().name) 
-							flag = false;
-					}
-				}
+					
 				if (flag)
 				{
 					newElem->setPrevious(LinkedListParent<T>::tail);
@@ -397,33 +413,13 @@ public:
 	}
 
 
-	virtual Element<T>* pop()
-	{
-		Element<T>* newElem;
-		if (LinkedListParent<T>::num > 0)
-		{
-			newElem = LinkedListParent<T>::head;
-			LinkedListParent<T>::head = LinkedListParent<T>::head->getNext();
-		}
-		else
-		{
-			newElem = LinkedListParent<T>::head;
-			LinkedListParent<T>::head = LinkedListParent<T>::tail = nullptr;
-		}
-		newElem->setPrevious(nullptr);
-		newElem->setNext(nullptr);
-		LinkedListParent<T>::num--;
-		return newElem;
-	}
-
-
 };
 
 
 int main()
 {
 	std::srand(std::time(nullptr));
-	Queue<book> lst;
+	newQueue<book> lst;
 	cout << endl;
 	book a, b, c, d;
 	ListIterator<book> it(lst);

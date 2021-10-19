@@ -1,7 +1,10 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
-//узел
+
+template <class V, class T>
+class TreeIterator;
+
 struct book
 {
 private:
@@ -111,6 +114,16 @@ public:
         parent = NULL;
         height = 1;
     }
+    Node<V, T> operator=(const Node<V, T> a)
+    {
+        left = a.left;
+        right = a.right;
+        parent = a.parent;
+        height = a.height;
+        data = a.data;
+        key = a.key;
+        return *this;
+    }
 
     virtual void print()
     {
@@ -143,7 +156,23 @@ protected:
     //корень - его достаточно для хранения всего дерева
     Node<V, T>* root;
 
+    virtual void clear(Node<V, T>* p)
+    {
+        if (p != nullptr)
+        {
+            clear(p->getLeft());
+            clear(p->getRight());
+
+            delete p;
+            p = nullptr;
+        }
+    }
+
 public:
+    virtual ~Tree()
+    {
+        clear(Tree<V, T>::root);
+    }
     //доступ к корневому элементу
     virtual Node<V, T>* getRoot() { return root; }
 
@@ -200,10 +229,100 @@ public:
     }
 
     //удаление узла
-    virtual void Remove(Node<V, T>* N)
+    Node<V, T>* Remove(Node<V, T>* N)
     {
-    }
+        if (N == NULL)
+            return NULL;
+        if (root == NULL)
+            return NULL;
 
+        TreeIterator<V, T> it = Min();
+        while (it != NULL)
+        {
+            if (it == N) break;
+            it++;
+        }
+        if (*it == NULL)
+            return NULL;
+
+        Node<V, T>* node = *it;
+        Node<V, T>* parent = nullptr;
+        Node<V, T>* left = nullptr;
+        Node<V, T>* right = nullptr;
+        Node<V, T>* rightleft = nullptr;
+
+        if (node->getParent() != NULL)
+            parent = node->getParent();
+        if (node->getLeft() != NULL)
+            left = node->getLeft();
+        if (node->getRight() != nullptr)
+            right = node->getRight();
+        if (node->getRight() != nullptr)
+        {
+            if (right->getLeft() != nullptr)
+                rightleft = right->getLeft();
+        }
+        if (parent->getRight() == node)
+        {
+            if (parent != nullptr)
+                parent->setRight(right);
+            if (right != nullptr)
+                right->setParent(parent);
+            if (left != nullptr)
+                left->setParent(right);
+            if (right != nullptr)
+                right->setLeft(left);
+            if (rightleft != nullptr)
+                this->Add(rightleft->getData());
+        }
+        else if (parent->getLeft() == node)
+        {
+            if (parent != nullptr)
+                parent->setLeft(right);
+            if (right != nullptr)
+                right->setParent(parent);
+            if (left != nullptr)
+                left->setParent(right);
+            if (right != nullptr)
+                right->setLeft(left);
+            if (rightleft != nullptr)
+                this->Add(rightleft->getData());
+        }
+        return *it;
+
+    }
+     Node <V, T>* RemoveByKey(V key)
+    {
+        if (root == NULL)
+            return nullptr;
+
+        TreeIterator<V, T> it = Min();
+        while (it != nullptr)
+        {
+            if ((*it)->getKey() == key) break;
+            it++;
+        }
+        if (*it == nullptr)
+            return nullptr;
+        Remove(*it);
+        return *it;
+    }
+    Node <V, T>* RemoveByValue(T value)
+    {
+        if (root == NULL)
+            return nullptr;
+
+        TreeIterator<V, T> it = Min();
+        while (it != nullptr)
+        {
+            if ((*it)->getData() == value) break;
+            it++;
+        }
+        if (*it == nullptr)
+            return nullptr;
+        Remove(*it);
+        return *it;
+    }
     virtual Node<V, T>* Min(Node<V, T>* Current = NULL)
     {
         //минимум - это самый "левый" узел. Идём по дереву всегда влево
@@ -236,9 +355,9 @@ public:
     virtual Node<V, T>* Find(T data, Node<V, T>* Current)
     {
         return  Current == nullptr ? nullptr :
-                Current->getData() == data ? Current : 
-                Current->getData() > data ? Find(data, Current->getLeft()) :
-                Current->getData() < data ? Find(data, Current->getRight()) : nullptr;
+            Current->getData() == data ? Current :
+            Current->getData() > data ? Find(data, Current->getLeft()) :
+            Current->getData() < data ? Find(data, Current->getRight()) : nullptr;
     }
 
     //три обхода дерева
@@ -274,8 +393,6 @@ public:
     }
 };
 
-template <class V, class T>
-class TreeIterator;
 
 template <class V, class T>
 class IteratedTree : public Tree<V, T>
@@ -285,14 +402,14 @@ public:
 
     TreeIterator<V, T> iterator; // Можно просто убрать итератор из member'ов этогого класса тк TreeIterator прекрасно работает и отдельно.
 
-    TreeIterator<V, T> begin() 
+    TreeIterator<V, T> begin()
     {
-        TreeIterator<V, T> it = Tree<V,T>::Max();
+        TreeIterator<V, T> it = Tree<V, T>::Max();
         return it;
     }
-    TreeIterator<V, T> end() 
+    TreeIterator<V, T> end()
     {
-        TreeIterator<V, T> it = Tree<V,T>::Min();
+        TreeIterator<V, T> it = Tree<V, T>::Min();
         return it;
     }
 };
@@ -372,7 +489,7 @@ public:
 
     TreeIterator() {}
 
-    Node<V,T>* operator*()
+    Node<V, T>* operator*()
     {
         return node;
     }
@@ -396,7 +513,7 @@ public:
 
     bool operator!=(Node<V, T>* rhs)
     {
-        return !(this == rhs);
+        return !(node == rhs);
     }
 };
 
@@ -478,7 +595,7 @@ protected:
         fixHeight(p);
         return p;
     }
-    
+
     //балансировка поддерева узла p - вызов нужных поворотов в зависимости от показателя баланса
     Node<V, T>* Balance(Node<V, T>* p) // балансировка узла p
     {
@@ -523,23 +640,11 @@ protected:
         }
     }
 
-    void clear(Node<V, T>* p)
-    {
-        if (p != nullptr)
-        {
-            clear(p->getLeft());
-            clear(p->getRight());
-
-            delete p;
-            p = nullptr;
-        }
-    }
-
 public:
     //конструктор AVL_Tree вызывает конструктор базового класса Tree
     AVL_Tree<V, T>() : IteratedTree<V, T>() {}
-
-    virtual Node<V, T>* Add_R(Node<V, T>* N)
+   
+    virtual Node<V, T>* Add_R(Node<V, T>*N)
     {
         return Add_R(N, Tree<V, T>::root);
     }
@@ -562,8 +667,20 @@ public:
     }
 
     //удаление узла
-    virtual void Remove(Node<V, T>* N)
+    void Remove(Node<V, T>* N)
     {
+        Tree<V, T>::Remove(N);
+        Balance(Tree<V,T>::root);
+    }
+    void RemoveByKey(V key)
+    {
+        Node<V, T>* tmp = Tree<V, T>::RemoveByKey(key);
+        Balance(Tree<V, T>::root);
+    }
+    void RemoveByValue(T value)
+    {
+        Node<V, T>* tmp = Tree<V, T>::RemoveByValue(value);
+        Balance(Tree<V, T>::root);
     }
     Node<V, T>* getRoot()
     {
@@ -593,7 +710,7 @@ public:
     void PrintIn()
     {
         TreeIterator<V, T> it(this->Min());
-        while (true)
+        while (it != nullptr)
         {
             cout << (*it)->getData() << endl;
             if (it == this->Max())
@@ -629,7 +746,7 @@ public:
 
     Node<V, T>* SearchByData(T a, Node<V, T>* p)
     {
-        return Find(a,p);
+        return Find(a, p);
     }
     Node<V, T>* SearchByKey(T k, Node<V, T>* p)
     {
@@ -641,11 +758,6 @@ public:
             if (p->getKey() == k)
                 return p;
         }
-    }
-
-    ~AVL_Tree()
-    {
-        clear(Tree<V, T>::root);
     }
 };
 
@@ -668,23 +780,24 @@ int main()
     book b6;
     b6.name = 60;
     T.Add(b1);
-    T.PrintNotIn();
+    //T.PrintNotIn();
     cout << endl << endl;
     T.Add(b2);
-    T.PrintNotIn();
-    cout << endl << endl;
+    //T.PrintNotIn();
+    //cout << endl << endl;
     T.Add(b3);
-    T.PrintNotIn();
-    cout << endl << endl;
+    //T.PrintNotIn();
+    //cout << endl << endl;
     T.Add(b4);
-    T.PrintNotIn();
-    cout << endl << endl;
+    //T.PrintNotIn();
+    //cout << endl << endl;
     T.Add(b5);
+    //T.PrintNotIn();
+    //cout << endl << endl;
+    T.RemoveByValue(b5);
+    T.RemoveByValue(b1);
     T.PrintNotIn();
-    cout << endl << endl;
-    T.Add(b6);
-
-    cout << endl
+       cout << endl
         << endl;
     //T.PrintIn();
     cout << endl

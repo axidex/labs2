@@ -22,7 +22,7 @@ bool tirazhmorethan4(Book x)
 }
 
 template<class T, class M>
-std::map<T,M> filtr(std::map<T,M> &mp, bool(*func)(Book x))
+std::map<T,M> filtr(std::map<T,M> &mp, bool(*func)(M x))
 {
     std::map<T,M> newmap;
     for (auto element : mp)
@@ -30,6 +30,30 @@ std::map<T,M> filtr(std::map<T,M> &mp, bool(*func)(Book x))
         if(func(element.second)) {newmap[element.first] = element.second;}
     }
     return newmap;
+}
+
+template<class T, class M>
+std::pair<T, M> SearchByKey(const std::map<T,M> &mp, T Key)
+{
+    auto it_m = mp.begin();
+    while (it_m != mp.end())
+    {
+        if (it_m->first == Key)
+            return std::pair<T, M>(it_m->first, it_m->second);
+        it_m++;
+    }
+    
+}
+template<class T, class M>
+std::pair<T, M> SearchByValue(const std::map<T,M> &mp, M Value)
+{
+    auto it_m = mp.begin();
+    while (it_m != mp.end())
+    {
+        if (it_m->second == Value)
+            return std::pair<T, M>(it_m->first, it_m->second);
+        it_m++;
+    }
 }
 
 int main()
@@ -45,6 +69,8 @@ int main()
     marks["Book7"] = g;
     std::map<std::string, Book> markssorted = filtr<std::string, Book>(marks,tirazhmorethan4);
     std::cout << "\nMap:\n";
+    std::pair<std::string, Book> qwe = SearchByKey<std::string,Book>(marks,"Book1");
+    std::cout << std::endl << qwe.first << '\t' << qwe.second << std::endl;
     //итератор пробегает по map
     std::map<std::string, Book>::iterator it_m = markssorted.begin();
     while (it_m != markssorted.end())
