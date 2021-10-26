@@ -1,85 +1,111 @@
 #include <iostream>
 #include <vector>
-#include <stack>
+#include <algorithm>
 #include <queue>
+
 using namespace std;
+
+#define big_number 100000
+
+struct edge {
+    int a, b, len;
+    edge(int a, int b, int len)
+    {
+        this->a = a;
+        this->b = b;
+        this->len = len;
+    }
+    bool operator<(const edge& other) 
+    {
+        return len < other.len;
+    }
+    bool operator>(const edge& other)
+    {
+        return len > other.len;
+    }
+};
+
+int p[big_number];
+int rk[big_number];
+
+void init_dsu() {
+    for (int i = 0; i < big_number; i++) {
+        p[i] = i;
+        rk[i] = 1;
+    }
+}
+
+int get_root(int v) {
+    if (p[v] == v) {
+        return v;
+    }
+    else {
+        return p[v] = get_root(p[v]);
+    }
+}
+
+bool merge(int a, int b) {
+    int ra = get_root(a), rb = get_root(b);
+
+    if (ra == rb) {
+        return false;
+    }
+    else {
+        if (rk[ra] < rk[rb]) {
+            p[ra] = rb;
+        }
+        else if (rk[rb] < rk[ra]) {
+            p[rb] = ra;
+        }
+        else {
+            p[ra] = rb;
+            rk[rb]++;
+        }
+
+        return true;
+    }
+}
+
+
 int main()
 {
-    // матрица смежности
     vector<vector<int>> mat =
-        {
-            {0, 1, 2, 0, 0, 0, 0},
-            {1, 0, 2, 0, 0, 0, 0},
-            {2, 2, 0, 4, 0, 0, 1},
-            {0, 0, 4, 0, 1, 2, 2},
-            {0, 0, 0, 1, 0, 1, 0},
-            {0, 0, 0, 2, 1, 0, 0},
-            {0, 0, 1, 2, 0, 0, 0}};
-    vector<int> used(7, 0);
-    //0 – вершина не посещена при поиске, 1 – помещена в структуру данных для вершин,
-    //но не обработана, 2 – обработана, смежные вершины помещены в структуру данных
-    //DFS – поиск в глубину
-    stack<int> Stack;
-    int iter = 0;
-    Stack.push(0); // помещаем в очередь первую вершину
-    while (!Stack.empty())
-        {                           // пока стек не пуст
-            int node = Stack.top(); // извлекаем вершину
-            Stack.pop();
-            std::cout << "\nDFS at vertex " << node << endl;
-            if (used[node] == 2)
-                continue;
-            used[node] = 2; // отмечаем ее как посещенную
-            iter++;
-            for (int j = 0; j < 7; j++)
-            { // проверяем для нее все смежные вершины
-                if (mat[node][j] > 0 && used[j] != 2)
-                {                  // если вершина смежная и не обнаружена
-                    Stack.push(j); // добавляем ее в cтек
-                    used[j] = 1;   // отмечаем вершину как обнаруженную
-                }
-            }
-            std::cout << node << endl; // выводим номер вершины
-        }
-    std::cout << "\nVisited vertices";
-    for (int i = 0; i < 7; i++)
-        std::cout << used[i] << " ";
-    for (int i = 0; i < 7; i++)
-        used[i] = 0;
-    queue<int> Queue;
-    //BFS – поиск в ширину
-    Queue.push(0); //в качестве начальной вершины используем 0.
-    used[0] = 2;
-    vector<int> dist(7, 10000); //расстояния до вершин от 0-й в числе ребер
-    dist[0] = 0;
-    iter = 0;
-    while (!Queue.empty())
     {
-        int node = Queue.front(); //извлекаем из очереди текущую вершину
-        Queue.pop();
-        //Здесь должна быть обработка текущей вершины.
-        std::cout << "\nBFS at vertex " << node << endl;
-        if (used[node] == 2)
-            continue;
-        used[node] = 2;
-        iter++;
-        for (int j = 0; j < 7; j++)
-        { // проверяем для нее все смежные вершины
-            if (mat[node][j] > 0 && used[j] != 2)
-            {                  // если вершина смежная и не обнаружена
-                Queue.push(j); // добавляем ее в очередь
-                used[j] = 1;   // отмечаем вершину как обнаруженную
-                if (dist[j] > dist[node] + 1)
-                    dist[j] = dist[node] + 1;
-            }
+        {0, 1, 2, 0, 0, 0, 0},
+        {1, 0, 2, 0, 0, 0, 0},
+        {2, 2, 0, 4, 0, 0, 1},
+        {0, 0, 4, 0, 1, 2, 2},
+        {0, 0, 0, 1, 0, 1, 0},
+        {0, 0, 0, 2, 1, 0, 0},
+        {0, 0, 1, 2, 0, 0, 0}
+    };
+
+
+    auto cmp = [](edge left, edge right) { return (left) > (right); };
+    std::priority_queue<edge, std::vector<edge>, decltype(cmp)> edges(cmp);
+    for (int i = 0; i < mat[1].capacity(); i++)
+    {
+        for (int j = 0 + i; j < mat.capacity(); j++)
+        {
+            if (mat[i][j] > 0)
+                edges.push(edge(i, j, mat[i][j]));
         }
+    }   
+
+    init_dsu();
+
+    vector<edge> minimal;
+
+    while (!edges.empty()) {
+        if (merge(edges.top().a, edges.top().b))
+            minimal.push_back(edges.top());
+        edges.pop();
     }
-    std::cout << "\nVisited vertices";
-    for (int i = 0; i < 7; i++)
-        std::cout << used[i] << " ";
-    std::cout << "\nDistances";
-    for (int i = 0; i < 7; i++)
-        std::cout << dist[i] << " ";
-    
+
+    for (const edge& el : minimal)
+    {
+        cout << el.a << '\t' << el.b << '\t' << el.len << endl;
+    }
+
     return 0;
 }
