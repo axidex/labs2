@@ -15,7 +15,7 @@ struct edge {
         this->b = b;
         this->len = len;
     }
-    bool operator<(const edge& other) 
+    bool operator<(const edge& other)
     {
         return len < other.len;
     }
@@ -23,49 +23,85 @@ struct edge {
     {
         return len > other.len;
     }
+    friend ostream& operator<<(ostream& os, const edge& e)
+    {
+        os <<  e.a << '\t' << e.b << '\t' << e.len ;
+        return os;
+    }
 };
 
 int p[big_number];
 int rk[big_number];
 
-void init_dsu() {
+void init_dsu() {       // Система непересекающихся множеств P[] - корни. Каждая вершина изначально является корнем
     for (int i = 0; i < big_number; i++) {
         p[i] = i;
-        rk[i] = 1;
+        rk[i] = 1; //Глубина каждой вершины в дереве
     }
 }
+
+// Пусть нам нужно объединить множества с корнями a и b. Просто присвоим p[a]=b, тем самым подвесив всё дерево a к корню дерева b
 
 int get_root(int v) {
     if (p[v] == v) {
         return v;
     }
     else {
-        return p[v] = get_root(p[v]);
+        return p[v] = get_root(p[v]); // переподвешиваю вершины на прямую к корню 
     }
-}
-
-bool merge(int a, int b) {
-    int ra = get_root(a), rb = get_root(b);
+}   
+                                
+bool merge(int a, int b) {      // возвращаемое значение обозначает, находились ли до вызова функции a и b в разных деревьях
+    int ra = get_root(a), rb = get_root(b);     // a и b - любые вершины в деревьях
 
     if (ra == rb) {
         return false;
     }
     else {
-        if (rk[ra] < rk[rb]) {
+        if (rk[ra] < rk[rb]) { // при объединении подвешивать дерево с меньшей глубиной к корню дерева с большей глубиной
             p[ra] = rb;
         }
         else if (rk[rb] < rk[ra]) {
             p[rb] = ra;
         }
-        else {
+        else {               // Если оба дерева имеют одинаковую глубину, неважно, какое из них подвешивать
             p[ra] = rb;
-            rk[rb]++;
+            rk[rb]++;   // Глубина увеличивается на 1
         }
 
         return true;
     }
 }
+vector<edge> ostov(vector<vector<int>> mat)
+{
 
+    auto cmp = [](edge left, edge right) { return (left) > (right); };
+    std::priority_queue<edge, std::vector<edge>, decltype(cmp)> edges(cmp);
+    for (int i = 0; i < mat[1].capacity(); i++)
+    {
+        for (int j = 0 + i; j < mat.capacity(); j++)
+        {
+            if (mat[i][j] > 0)
+                edges.push(edge(i, j, mat[i][j]));
+        }
+    }
+    vector<edge> minimal;
+
+    while (!edges.empty()) {
+        if (merge(edges.top().a, edges.top().b))
+            minimal.push_back(edges.top());
+        edges.pop();
+    }
+    return minimal;
+}
+template<class T>
+void print(const vector<T> minimal)
+{
+    for (const T& el : minimal)
+    {
+        cout << el << endl;
+    }
+}
 
 int main()
 {
@@ -80,32 +116,11 @@ int main()
         {0, 0, 1, 2, 0, 0, 0}
     };
 
-
-    auto cmp = [](edge left, edge right) { return (left) > (right); };
-    std::priority_queue<edge, std::vector<edge>, decltype(cmp)> edges(cmp);
-    for (int i = 0; i < mat[1].capacity(); i++)
-    {
-        for (int j = 0 + i; j < mat.capacity(); j++)
-        {
-            if (mat[i][j] > 0)
-                edges.push(edge(i, j, mat[i][j]));
-        }
-    }   
-
     init_dsu();
 
-    vector<edge> minimal;
+    vector<edge> minimal = ostov(mat);
 
-    while (!edges.empty()) {
-        if (merge(edges.top().a, edges.top().b))
-            minimal.push_back(edges.top());
-        edges.pop();
-    }
-
-    for (const edge& el : minimal)
-    {
-        cout << el.a << '\t' << el.b << '\t' << el.len << endl;
-    }
+    
 
     return 0;
 }
