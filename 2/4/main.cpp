@@ -154,7 +154,7 @@ public:
     int getCount() { return len; }
     Node<T>& operator[](int index)
     {
-        assert(index >= 0 || index < len); //?
+        assert(index >= 0 && index < len); //?
         return arr[index];
     }
     //конструктор
@@ -168,8 +168,8 @@ public:
     //поменять местами элементы arr[index1], arr[index2]
     void Swap(int index1, int index2)
     {
-        assert(index1 >= 0 || index1 < len);
-        assert(index2 >= 0 || index2 < len);
+        assert(index1 >= 0 && index1 < len);
+        assert(index2 >= 0 && index2 < len);
 
         //здесь нужна защита от дурака
         Node<T> temp;
@@ -186,37 +186,37 @@ public:
     //массиве
     Node<T>* GetLeftChild(int index)
     {
-        assert(index >= 0 || index * 2 + 1 < len);
+        assert(index >= 0 && index * 2 + 1 < len);
         return &arr[index * 2 + 1];
     }
     Node<T>* GetRightChild(int index)
     {
-        assert(index >= 0 || index * 2 + 2 < len);
+        assert(index >= 0 && index * 2 + 2 < len);
         //здесь нужна защита от дурака
         return &arr[index * 2 + 2];
     }
     Node<T>* GetParent(int index)
     {
-        assert(index >= 0 || index < len);
+        assert(index >= 0 && index < len);
         //здесь нужна защита от дурака
         return (index % 2 == 0) ? &arr[index / 2 - 1] : &arr[index / 2];
 
     }
     int GetLeftChildIndex(int index)
     {
-        assert(index >= 0 || index * 2 + 1 < len);
+        assert(index >= -1);
         //здесь нужна защита от дурака
         return index * 2 + 1;
     }
     int GetRightChildIndex(int index)
     {
-        assert(index >= 0 || index * 2 + 2 < len);
+        assert(index >= -1);
         //здесь нужна защита от дурака
         return index * 2 + 2;
     }
     int GetParentIndex(int index)
     {
-        assert(index >= 0 || index < len);
+        assert(index >= 0 && index < len);
         //здесь нужна защита от дурака
         return (index % 2 == 0) ? index / 2 - 1 : index / 2;
     }
