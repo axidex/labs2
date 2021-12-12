@@ -52,7 +52,7 @@ void paintgraph(vector<vector<int> >& matrix, vector <int>& color, int curr=0)
 		neighbours.clear();
 
 		for (int next = 0; next < matrix.size(); next++)
-			if (matrix[curr][next] == 1 || !color[next])
+			if (matrix[curr][next] >= 1 || !color[next])
 			{
 				if(color[next])
 				{
@@ -86,18 +86,21 @@ int main() {
 
 	vector<vector<int> > mat =
 	{
-	{ 0, 1, 0, 0, 0, 1 },
-	{ 1, 0, 1, 0, 0, 0 },
-	{ 0, 1, 0, 1, 1, 0 },
-	{ 0, 0, 1, 0, 1, 0 },
-	{ 0, 0, 1, 1, 0, 1 },
-	{ 1, 0, 0, 0, 1, 0 }
-	};
+        { 0, 6, 5, 6, 7, 5, 8, 8, 2 },
+        { 6, 0, 2, 5, 1, 4, 4, 3, 2 },
+        { 5, 2, 0, 0, 6, 7, 5, 4, 2 },
+        { 6, 5, 0, 0, 2, 4, 1, 7, 4 },
+        { 7, 1, 6, 2, 0, 8, 0, 9, 5 },
+        { 5, 4, 7, 4, 8, 0, 9, 8, 0 },
+        { 8, 4, 5, 1, 0, 9, 0, 7, 5 },
+        { 8, 3, 4, 7, 9, 8, 7, 0, 7 },
+        { 2, 2, 2, 4, 5, 0, 5, 7, 0 },
+    };
 
-	vector<int> color(6, 0);
+	vector<int> color(mat.size(), 0);
 	paintgraph(mat, color, 0);
 	std::cout << "\nColor: ";
-	for (int i = 0; i < 6; i++) std::cout << color[i] << " ";
+	for (int i = 0; i < mat.size(); i++) std::cout << color[i] << " ";
 
 	
 
